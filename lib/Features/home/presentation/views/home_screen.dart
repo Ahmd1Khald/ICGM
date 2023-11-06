@@ -17,10 +17,77 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final databaseReference = FirebaseDatabase.instance.reference();
+  bool showCheckButton = true;
   void sendAlertMessage() {
     AppFunctions.shareDuaa(textToShare: 'the blood sugar ratio is 120');
   }
+
+  Future<void> showAlertMessage({
+    required VoidCallback func1,
+    required VoidCallback func2,
+  }) async {
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        content: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.34,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                AssetsManager.appImage2,
+                width: MediaQuery.of(context).size.width * 0.25,
+                fit: BoxFit.fill,
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.014,
+              ),
+              const Text(
+                'Did you taken your insulin ratio?',
+                style: TextStyle(
+                  color: MyColors.darkBrown,
+                  fontSize: 20,
+                ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.03,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                    onPressed: func1,
+                    child: const Text(
+                      "Not yet",
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: func2,
+                    child: const Text(
+                      "Yes",
+                      style: TextStyle(
+                        color: Colors.green,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  final databaseReference =
+      FirebaseDatabase.instance.ref('Embedded/Action needed/value');
 
   @override
   Widget build(BuildContext context) {
@@ -60,18 +127,64 @@ class _HomeScreenState extends State<HomeScreen> {
             DataSnapshot? data = snapshot.data;
             if (data!.value != null) {
               // Handle the data from the snapshot
-              print(data.value);
+
               return SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.06,
+                      height: MediaQuery.of(context).size.height * 0.04,
+                    ),
+                    const Text(
+                      'Your blood ratio',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 30,
+                        color: MyColors.darkBrown,
+                      ),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.04,
                     ),
                     BloodSugarRatio(
-                      ratio: data.children.first.toString(),
+                      ratio: snapshot.data!
+                          .child('current')
+                          .child('Reading')
+                          .value
+                          .toString(),
                       visible: true,
                     ),
+                    if (showCheckButton)
+                      MaterialButton(
+                        onPressed: () {
+                          if (snapshot.data!
+                                  .child('Action needed')
+                                  .child('value')
+                                  .value ==
+                              true) {
+                            showAlertMessage(func1: () {
+                              Navigator.pop(context);
+                            }, func2: () {
+                              databaseReference.set(false).then((value) {
+                                showCheckButton = false;
+                                setState(() {});
+                                Navigator.pop(context);
+                              });
+                            });
+                          }
+                        },
+                        splashColor: MyColors.darkBrown,
+                        color: MyColors.lightBrown,
+                        child: const Text(
+                          'Check Insulin',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                            color: MyColors.babyBrown,
+                          ),
+                        ),
+                      ),
                     const WaitingWidget(
                       visible: false,
                     ),

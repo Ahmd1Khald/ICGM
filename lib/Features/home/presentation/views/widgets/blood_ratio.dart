@@ -12,10 +12,10 @@ class BloodSugarRatio extends StatelessWidget {
   Widget build(BuildContext context) {
     return Visibility(
       visible: visible,
-      child: const Text(
-        "356",
+      child: Text(
+        ratio,
         textAlign: TextAlign.center,
-        style: TextStyle(
+        style: const TextStyle(
           fontWeight: FontWeight.w700,
           color: MyColors.darkBrown,
           fontSize: 64,
