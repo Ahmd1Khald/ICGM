@@ -5,13 +5,6 @@ import 'assets_manager.dart';
 import 'my_colors.dart';
 
 class AppFunctions {
-  static void shareDuaa({required String textToShare, String subject = ''}) {
-    Share.share(
-      textToShare,
-      subject: subject,
-    );
-  }
-
   static Future<void> showAlertMessage({
     required VoidCallback func1,
     required VoidCallback func2,
@@ -78,8 +71,9 @@ class AppFunctions {
   }
 
   static void sendAlertMessage({required String ratio, required String state}) {
-    AppFunctions.shareDuaa(
-        textToShare:
-            'Your state is $state and the blood sugar ratio is $ratio\n form ICGM app');
+    Share.share(
+      'Your state is $state and the sugar level is $ratio\n form ICGM app',
+      subject: '',
+    );
   }
 }

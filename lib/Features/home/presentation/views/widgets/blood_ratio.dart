@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../../Core/constance/my_colors.dart';
 
-class BloodSugarRatio extends StatelessWidget {
-  const BloodSugarRatio({Key? key, required this.ratio, required this.visible})
+class SugarLevel extends StatelessWidget {
+  const SugarLevel({Key? key, required this.ratio, required this.visible})
       : super(key: key);
 
   final String ratio;

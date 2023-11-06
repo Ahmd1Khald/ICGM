@@ -5,8 +5,9 @@ import 'package:icgm/Core/constance/assets_manager.dart';
 import 'package:icgm/Features/home/presentation/views/widgets/backgroud_image.dart';
 import 'package:icgm/Features/home/presentation/views/widgets/blood_ratio.dart';
 import 'package:icgm/Features/home/presentation/views/widgets/danger_state_widget.dart';
-import 'package:icgm/Features/home/presentation/views/widgets/loading_widget.dart';
-import 'package:icgm/Features/home/presentation/views/widgets/wating_widget.dart';
+import 'package:icgm/Features/home/presentation/views/widgets/higher_state_widget.dart';
+import 'package:icgm/Features/home/presentation/views/widgets/no_data_widget.dart';
+import 'package:icgm/Features/home/presentation/views/widgets/normal_state_widget.dart';
 
 import '../../../../Core/constance/my_colors.dart';
 import '../../../../Core/servises/firebase_servise.dart';
@@ -83,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: MediaQuery.of(context).size.height * 0.04,
                     ),
                     const Text(
-                      'Your blood ratio',
+                      'Your sugar level',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
@@ -94,19 +95,32 @@ class _HomeScreenState extends State<HomeScreen> {
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.04,
                     ),
-                    BloodSugarRatio(
-                        ratio: snapshot.data!
-                            .child('current')
-                            .child('Reading')
-                            .value
-                            .toString(),
-                        visible: true),
+                    SugarLevel(
+                      ratio: snapshot.data!
+                          .child('current')
+                          .child('Reading')
+                          .value
+                          .toString(),
+                      visible: true,
+                    ),
                     if (snapshot.data!
                             .child('current')
                             .child('Condition')
                             .value ==
                         "Danger")
                       const DangerStateWidget(),
+                    if (snapshot.data!
+                            .child('current')
+                            .child('Condition')
+                            .value ==
+                        "Normal")
+                      const NormalStateWidget(),
+                    if (snapshot.data!
+                            .child('current')
+                            .child('Condition')
+                            .value ==
+                        "Higher")
+                      const HigherStateWidget(),
                     if (snapshot.data!
                             .child('Action needed')
                             .child('value')
@@ -138,9 +152,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-                    const WaitingWidget(
-                      visible: false,
-                    ),
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.07,
                     ),
@@ -149,10 +160,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               );
             } else {
-              return const LoadingWidget();
+              return const NoDataWidget();
             }
           } else {
-            return const LoadingWidget();
+            return const NoDataWidget();
           }
         },
       ),

@@ -3,8 +3,8 @@ import 'package:icgm/Features/home/presentation/views/widgets/wating_widget.dart
 
 import 'backgroud_image.dart';
 
-class LoadingWidget extends StatelessWidget {
-  const LoadingWidget({Key? key}) : super(key: key);
+class NoDataWidget extends StatelessWidget {
+  const NoDataWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
