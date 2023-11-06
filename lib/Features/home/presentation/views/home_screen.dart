@@ -5,6 +5,7 @@ import 'package:icgm/Core/constance/assets_manager.dart';
 import 'package:icgm/Features/home/presentation/views/widgets/backgroud_image.dart';
 import 'package:icgm/Features/home/presentation/views/widgets/blood_ratio.dart';
 import 'package:icgm/Features/home/presentation/views/widgets/wating_widget.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../../Core/constance/my_colors.dart';
 import '../../../../Core/servises/firebase_servise.dart';
@@ -18,8 +19,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool showCheckButton = true;
-  void sendAlertMessage() {
-    AppFunctions.shareDuaa(textToShare: 'the blood sugar ratio is 120');
+  void sendAlertMessage({required String ratio, required String state}) {
+    AppFunctions.shareDuaa(
+        textToShare:
+            'Your state is $state and the blood sugar ratio is $ratio\n form ICGM app');
   }
 
   Future<void> showAlertMessage({
@@ -127,7 +130,20 @@ class _HomeScreenState extends State<HomeScreen> {
             DataSnapshot? data = snapshot.data;
             if (data!.value != null) {
               // Handle the data from the snapshot
-
+              if (snapshot.data!.child('current').child('Condition').value ==
+                  "Danger") {
+                sendAlertMessage(
+                    ratio: snapshot.data!
+                        .child('current')
+                        .child('Reading')
+                        .value
+                        .toString(),
+                    state: snapshot.data!
+                        .child('current')
+                        .child('Condition')
+                        .value
+                        .toString());
+              }
               return SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -155,24 +171,41 @@ class _HomeScreenState extends State<HomeScreen> {
                           .toString(),
                       visible: true,
                     ),
-                    if (showCheckButton)
+                    if (snapshot.data!
+                            .child('current')
+                            .child('Condition')
+                            .value ==
+                        "Danger")
+                      Shimmer.fromColors(
+                        period: const Duration(seconds: 2),
+                        baseColor: MyColors.lightBrown,
+                        highlightColor: Colors.red,
+                        child: const Text(
+                          "DANGER STATE",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            color: MyColors.darkBrown,
+                            fontSize: 26,
+                          ),
+                        ),
+                      ),
+                    if (snapshot.data!
+                            .child('Action needed')
+                            .child('value')
+                            .value ==
+                        true)
                       MaterialButton(
                         onPressed: () {
-                          if (snapshot.data!
-                                  .child('Action needed')
-                                  .child('value')
-                                  .value ==
-                              true) {
-                            showAlertMessage(func1: () {
+                          showAlertMessage(func1: () {
+                            Navigator.pop(context);
+                          }, func2: () {
+                            databaseReference.set(false).then((value) {
+                              showCheckButton = false;
+                              setState(() {});
                               Navigator.pop(context);
-                            }, func2: () {
-                              databaseReference.set(false).then((value) {
-                                showCheckButton = false;
-                                setState(() {});
-                                Navigator.pop(context);
-                              });
                             });
-                          }
+                          });
                         },
                         splashColor: MyColors.darkBrown,
                         color: MyColors.lightBrown,
@@ -204,7 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: MediaQuery.of(context).size.height * 0.06,
                     ),
                     const BloodSugarRatio(
-                      ratio: '120',
+                      ratio: '',
                       visible: false,
                     ),
                     const WaitingWidget(
@@ -227,7 +260,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: MediaQuery.of(context).size.height * 0.06,
                   ),
                   const BloodSugarRatio(
-                    ratio: '120',
+                    ratio: '',
                     visible: false,
                   ),
                   const WaitingWidget(
@@ -249,7 +282,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: MediaQuery.of(context).size.height * 0.06,
                   ),
                   const BloodSugarRatio(
-                    ratio: '120',
+                    ratio: '',
                     visible: false,
                   ),
                   const WaitingWidget(

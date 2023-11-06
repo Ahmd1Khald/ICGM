@@ -41,8 +41,8 @@ dependencies:
   share: ^2.0.4
   #rename
   rename: ^3.0.1
-#  #cache
-#  shared_preferences: ^2.2.2
+  #ui
+  shimmer: ^3.0.0
   #firebase
   firebase_core: ^2.21.0
   firebase_database: ^10.3.3
