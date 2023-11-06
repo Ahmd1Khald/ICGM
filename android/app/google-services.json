@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "768782412950",
+    "firebase_url": "https://capstone-efd73-default-rtdb.firebaseio.com",
+    "project_id": "capstone-efd73",
+    "storage_bucket": "capstone-efd73.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:768782412950:android:d1df1862d8a2ec873366b7",
+        "android_client_info": {
+          "package_name": "com.example.icgm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKuNIQPK2_4aWkeQvrpABif1c2a_PCQYw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

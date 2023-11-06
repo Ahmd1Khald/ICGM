@@ -14,7 +14,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool measured = true;
+  bool measured = false;
   sendAlertMessage() {
     AppFunctions.shareDuaa(textToShare: 'the blood sugar ratio is 120');
   }

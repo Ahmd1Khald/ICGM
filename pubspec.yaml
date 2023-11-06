@@ -41,8 +41,8 @@ dependencies:
   share: ^2.0.4
 #  #cache
 #  shared_preferences: ^2.2.2
-#  #firebase
-#  firebase_core: ^2.21.0
+  #firebase
+  firebase_core: ^2.21.0
 
 dev_dependencies:
   flutter_test:
