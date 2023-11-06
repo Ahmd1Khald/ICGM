@@ -39,10 +39,13 @@ dependencies:
   flutter_spinkit: ^5.2.0
   #share
   share: ^2.0.4
+  #rename
+  rename: ^3.0.1
 #  #cache
 #  shared_preferences: ^2.2.2
   #firebase
   firebase_core: ^2.21.0
+  firebase_database: ^10.3.3
 
 dev_dependencies:
   flutter_test:
@@ -54,6 +57,13 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/app_logo.png"
+  remove_alpha_ios: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

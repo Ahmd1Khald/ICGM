@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:icgm/Core/constance/app_function.dart';
+import 'package:icgm/Core/constance/assets_manager.dart';
 import 'package:icgm/Features/home/presentation/views/widgets/backgroud_image.dart';
 import 'package:icgm/Features/home/presentation/views/widgets/blood_ratio.dart';
 import 'package:icgm/Features/home/presentation/views/widgets/wating_widget.dart';
@@ -24,6 +25,29 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: MyColors.creamColor,
       appBar: AppBar(
+        centerTitle: true,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "ICGM",
+              style: TextStyle(
+                color: MyColors.darkBrown,
+                fontWeight: FontWeight.bold,
+                fontSize: 34,
+              ),
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            Image.asset(
+              AssetsManager.appImage2,
+              width: 40,
+              height: 40,
+              fit: BoxFit.cover,
+            ),
+          ],
+        ),
         backgroundColor: MyColors.lightBrown,
         elevation: 0,
       ),
