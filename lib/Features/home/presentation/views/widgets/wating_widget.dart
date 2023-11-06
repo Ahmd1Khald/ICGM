@@ -10,7 +10,7 @@ class WaitingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Visibility(
-      visible: !visible,
+      visible: visible,
       child: const Column(
         children: [
           Text(
