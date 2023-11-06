@@ -4,8 +4,9 @@ import 'package:icgm/Core/constance/app_function.dart';
 import 'package:icgm/Core/constance/assets_manager.dart';
 import 'package:icgm/Features/home/presentation/views/widgets/backgroud_image.dart';
 import 'package:icgm/Features/home/presentation/views/widgets/blood_ratio.dart';
+import 'package:icgm/Features/home/presentation/views/widgets/danger_state_widget.dart';
+import 'package:icgm/Features/home/presentation/views/widgets/loading_widget.dart';
 import 'package:icgm/Features/home/presentation/views/widgets/wating_widget.dart';
-import 'package:shimmer/shimmer.dart';
 
 import '../../../../Core/constance/my_colors.dart';
 import '../../../../Core/servises/firebase_servise.dart';
@@ -19,76 +20,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool showCheckButton = true;
-  void sendAlertMessage({required String ratio, required String state}) {
-    AppFunctions.shareDuaa(
-        textToShare:
-            'Your state is $state and the blood sugar ratio is $ratio\n form ICGM app');
-  }
-
-  Future<void> showAlertMessage({
-    required VoidCallback func1,
-    required VoidCallback func2,
-  }) async {
-    await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        content: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.34,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                AssetsManager.appImage2,
-                width: MediaQuery.of(context).size.width * 0.25,
-                fit: BoxFit.fill,
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.014,
-              ),
-              const Text(
-                'Did you taken your insulin ratio?',
-                style: TextStyle(
-                  color: MyColors.darkBrown,
-                  fontSize: 20,
-                ),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.03,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
-                    onPressed: func1,
-                    child: const Text(
-                      "Not yet",
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: func2,
-                    child: const Text(
-                      "Yes",
-                      style: TextStyle(
-                        color: Colors.green,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   final databaseReference =
       FirebaseDatabase.instance.ref('Embedded/Action needed/value');
 
@@ -132,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
               // Handle the data from the snapshot
               if (snapshot.data!.child('current').child('Condition').value ==
                   "Danger") {
-                sendAlertMessage(
+                AppFunctions.sendAlertMessage(
                     ratio: snapshot.data!
                         .child('current')
                         .child('Reading')
@@ -164,32 +95,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: MediaQuery.of(context).size.width * 0.04,
                     ),
                     BloodSugarRatio(
-                      ratio: snapshot.data!
-                          .child('current')
-                          .child('Reading')
-                          .value
-                          .toString(),
-                      visible: true,
-                    ),
+                        ratio: snapshot.data!
+                            .child('current')
+                            .child('Reading')
+                            .value
+                            .toString(),
+                        visible: true),
                     if (snapshot.data!
                             .child('current')
                             .child('Condition')
                             .value ==
                         "Danger")
-                      Shimmer.fromColors(
-                        period: const Duration(seconds: 2),
-                        baseColor: MyColors.lightBrown,
-                        highlightColor: Colors.red,
-                        child: const Text(
-                          "DANGER STATE",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            color: MyColors.darkBrown,
-                            fontSize: 26,
-                          ),
-                        ),
-                      ),
+                      const DangerStateWidget(),
                     if (snapshot.data!
                             .child('Action needed')
                             .child('value')
@@ -197,15 +114,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         true)
                       MaterialButton(
                         onPressed: () {
-                          showAlertMessage(func1: () {
-                            Navigator.pop(context);
-                          }, func2: () {
-                            databaseReference.set(false).then((value) {
-                              showCheckButton = false;
-                              setState(() {});
-                              Navigator.pop(context);
-                            });
-                          });
+                          AppFunctions.showAlertMessage(
+                              func1: () {
+                                Navigator.pop(context);
+                              },
+                              func2: () {
+                                databaseReference.set(false).then((value) {
+                                  showCheckButton = false;
+                                  setState(() {});
+                                  Navigator.pop(context);
+                                });
+                              },
+                              context: context);
                         },
                         splashColor: MyColors.darkBrown,
                         color: MyColors.lightBrown,
@@ -229,72 +149,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               );
             } else {
-              return SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.06,
-                    ),
-                    const BloodSugarRatio(
-                      ratio: '',
-                      visible: false,
-                    ),
-                    const WaitingWidget(
-                      visible: true,
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.07,
-                    ),
-                    const BackgroundImage(),
-                  ],
-                ),
-              );
+              return const LoadingWidget();
             }
-          } else if (snapshot.hasError) {
-            return SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.06,
-                  ),
-                  const BloodSugarRatio(
-                    ratio: '',
-                    visible: false,
-                  ),
-                  const WaitingWidget(
-                    visible: true,
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.07,
-                  ),
-                  const BackgroundImage(),
-                ],
-              ),
-            );
           } else {
-            return SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.06,
-                  ),
-                  const BloodSugarRatio(
-                    ratio: '',
-                    visible: false,
-                  ),
-                  const WaitingWidget(
-                    visible: true,
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.07,
-                  ),
-                  const BackgroundImage(),
-                ],
-              ),
-            );
+            return const LoadingWidget();
           }
         },
       ),
